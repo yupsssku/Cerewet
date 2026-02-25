@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top Up — GamesNow</title>
+<link rel="icon" href="https://reygenteng.github.io/gamesku/gamesnow.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04091a;--s1:#08122a;--s2:#0d1e40;--s3:#132554;
+  --br:rgba(37,99,235,.18);--bh:rgba(37,99,235,.4);
+  --p:#2563eb;--pl:#3b82f6;--pa:#60a5fa;--cy:#22d3ee;
+  --tx:#f0f6ff;--mu:#6b8cba;--ok:#10b981;--er:#ef4444;--wa:#f59e0b;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding-bottom:90px}
+a{text-decoration:none;color:inherit}
+img{display:block}
+
+.header{
+  position:sticky;top:0;z-index:200;height:56px;padding:0 16px;
+  display:flex;align-items:center;gap:14px;
+  background:rgba(4,9,26,.9);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--br)
+}
+.btn-back{
+  display:flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:10px;
+  background:var(--s1);border:1px solid var(--br);
+  cursor:pointer;flex-shrink:0;color:var(--tx);font-size:1.1em;
+  transition:all .2s
+}
+.btn-back:hover{border-color:var(--bh)}
+.htitle{font-weight:600;font-size:.95em}
+
+/* Game info bar */
+.game-bar{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 16px;
+  background:var(--s1);border-bottom:1px solid var(--br)
+}
+.game-bar img{width:52px;height:52px;border-radius:12px;object-fit:cover}
+.game-bar-ico{
+  width:52px;height:52px;border-radius:12px;
+  background:var(--s2);display:flex;align-items:center;
+  justify-content:center;font-size:1.8em;flex-shrink:0
+}
+.game-bar-tag{font-size:.7em;font-weight:600;color:var(--pa);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.game-bar-name{font-size:1.05em;font-weight:700}
+.game-bar-sub{font-size:.78em;color:var(--mu);margin-top:2px}
+
+/* Steps */
+.step{padding:16px}
+.step-label{
+  display:flex;align-items:center;gap:8px;
+  font-size:.85em;font-weight:600;color:var(--pa);
+  margin-bottom:12px
+}
+.step-num{
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(37,99,235,.2);border:1px solid rgba(37,99,235,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.72em;font-weight:700;flex-shrink:0
+}
+
+/* ID fields */
+.field-group{display:flex;flex-direction:column;gap:10px}
+.field-row{display:flex;gap:10px}
+.field-wrap{flex:1;display:flex;flex-direction:column;gap:5px}
+.field-lbl{font-size:.78em;color:var(--mu);font-weight:500}
+.field-inp{
+  background:var(--s1);border:1px solid var(--br);
+  border-radius:10px;padding:11px 13px;
+  color:var(--tx);font-family:inherit;font-size:.9em;
+  outline:none;transition:border-color .2s;width:100%
+}
+.field-inp:focus{border-color:var(--pl)}
+.field-inp::placeholder{color:var(--mu)}
+.check-btn{
+  margin-top:10px;padding:9px 16px;
+  background:rgba(37,99,235,.15);border:1px solid var(--br);
+  border-radius:10px;color:var(--pa);font-family:inherit;
+  font-size:.83em;font-weight:600;cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:6px;width:fit-content
+}
+.check-btn:hover{background:rgba(37,99,235,.25);border-color:var(--bh)}
+.id-result{
+  margin-top:8px;padding:9px 13px;border-radius:10px;
+  background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);
+  font-size:.83em;color:var(--ok);display:none
+}
+
+/* Products grid */
+.prod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+@media(min-width:480px){.prod-grid{grid-template-columns:repeat(3,1fr)}}
+
+.prod-item{
+  background:var(--s1);border:1.5px solid var(--br);
+  border-radius:12px;padding:13px 11px;
+  text-align:center;cursor:pointer;transition:all .22s;
+  position:relative
+}
+.prod-item:hover{border-color:var(--bh);background:var(--s2)}
+.prod-item.sel{
+  border-color:var(--pl);
+  background:rgba(37,99,235,.12);
+  box-shadow:0 0 0 1px var(--pl)
+}
+.prod-item.unavail{opacity:.4;cursor:not-allowed;pointer-events:none}
+.prod-icon{font-size:1.3em;margin-bottom:6px}
+.prod-name{font-size:.75em;font-weight:600;line-height:1.3;margin-bottom:5px}
+.prod-price{font-size:.82em;font-weight:700;color:var(--pa)}
+.prod-note{font-size:.65em;color:var(--mu);margin-top:3px;line-height:1.3}
+.prod-badge{
+  position:absolute;top:-1px;right:-1px;
+  background:var(--pl);color:#fff;
+  font-size:.6em;font-weight:700;
+  padding:2px 7px;border-radius:0 10px 0 6px
+}
+.prod-chk{
+  position:absolute;top:6px;left:6px;
+  width:16px;height:16px;border-radius:50%;
+  background:var(--pl);
+  display:none;align-items:center;justify-content:center;
+  font-size:.65em;color:#fff
+}
+.prod-item.sel .prod-chk{display:flex}
+
+/* Loading skeleton */
+.skel{
+  background:linear-gradient(90deg,var(--s2) 25%,var(--s3) 50%,var(--s2) 75%);
+  background-size:200% 100%;animation:shim 1.5s infinite;
+  border-radius:10px;height:88px
+}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* Payment methods */
+.pay-list{display:flex;flex-direction:column;gap:8px}
+.pay-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 15px;
+  background:var(--s1);border:1.5px solid var(--br);
+  border-radius:12px;cursor:pointer;transition:all .2s
+}
+.pay-item:hover{border-color:var(--bh);background:var(--s2)}
+.pay-item.sel{border-color:var(--pl);background:rgba(37,99,235,.12)}
+.pay-l{display:flex;align-items:center;gap:12px}
+.pay-logo{height:24px;object-fit:contain}
+.pay-logo-txt{
+  font-size:1.1em;font-weight:700;color:var(--pa);
+  width:50px;text-align:left
+}
+.pay-name{font-size:.88em;font-weight:600}
+.pay-desc{font-size:.74em;color:var(--mu);margin-top:1px}
+.pay-radio{
+  width:18px;height:18px;border-radius:50%;
+  border:2px solid var(--br);transition:all .2s;flex-shrink:0
+}
+.pay-item.sel .pay-radio{
+  border-color:var(--pl);background:var(--pl);
+  box-shadow:0 0 0 3px rgba(37,99,235,.2)
+}
+
+/* Sticky footer */
+.sticky-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(8,18,42,.95);backdrop-filter:blur(20px);
+  border-top:1px solid var(--br);
+  padding:12px 16px;display:none;
+  align-items:center;justify-content:space-between;
+  gap:14px;z-index:150
+}
+.sticky-bar.show{display:flex}
+.bar-info-label{font-size:.74em;color:var(--mu)}
+.bar-info-price{font-size:1.1em;font-weight:700;color:var(--pa)}
+.bar-info-prod{font-size:.76em;color:var(--mu);margin-top:1px}
+.btn-buy{
+  flex-shrink:0;padding:12px 22px;
+  background:var(--p);color:#fff;border:none;
+  border-radius:11px;font-family:inherit;font-size:.9em;font-weight:700;
+  cursor:pointer;transition:all .2s;white-space:nowrap
+}
+.btn-buy:hover{background:#1d4ed8}
+.btn-buy:disabled{background:var(--s3);cursor:not-allowed;color:var(--mu)}
+
+/* MODALS */
+.modal-bg{
+  display:none;position:fixed;inset:0;
+  background:rgba(4,9,26,.8);backdrop-filter:blur(8px);
+  z-index:300;align-items:flex-end;justify-content:center
+}
+.modal-bg.show{display:flex}
+@media(min-width:600px){.modal-bg{align-items:center}}
+.modal{
+  background:var(--s1);border:1px solid var(--br);
+  border-radius:20px 20px 0 0;
+  width:100%;max-width:480px;
+  padding:20px 20px 28px;
+  animation:mslide .3s ease
+}
+@media(min-width:600px){.modal{border-radius:20px}}
+@keyframes mslide{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:18px
+}
+.modal-title{font-size:1em;font-weight:700}
+.modal-close{
+  width:30px;height:30px;border-radius:8px;
+  background:var(--s2);border:none;color:var(--mu);
+  font-size:1.1em;cursor:pointer;display:flex;
+  align-items:center;justify-content:center
+}
+.modal-close:hover{color:var(--tx)}
+
+/* Confirmation modal */
+.conf-row{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  padding:10px 0;border-bottom:1px solid var(--br)
+}
+.conf-row:last-child{border:none}
+.conf-lbl{font-size:.82em;color:var(--mu)}
+.conf-val{font-size:.88em;font-weight:600;text-align:right;max-width:60%}
+.btn-conf{
+  width:100%;padding:14px;
+  background:var(--p);color:#fff;border:none;
+  border-radius:12px;font-family:inherit;font-size:.95em;font-weight:700;
+  cursor:pointer;margin-top:18px;transition:all .2s
+}
+.btn-conf:hover{background:#1d4ed8}
+.btn-wa{background:#16a34a}
+.btn-wa:hover{background:#15803d!important}
+
+/* QRIS modal */
+.qris-wrap{text-align:center;padding:8px 0}
+.qris-img-wrap{
+  width:200px;height:200px;margin:0 auto 14px;
+  background:white;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;padding:8px
+}
+.qris-img-wrap img{width:100%;height:100%;object-fit:contain}
+.qris-timer{
+  font-size:1.6em;font-weight:700;color:var(--er);
+  font-variant-numeric:tabular-nums;margin:10px 0 4px
+}
+.qris-amount{font-size:1.05em;font-weight:700;color:var(--pa);margin-bottom:6px}
+.qris-status{font-size:.83em;color:var(--mu);margin-bottom:16px}
+.qris-spinner{
+  display:inline-block;width:16px;height:16px;
+  border:2px solid var(--br);border-top-color:var(--pl);
+  border-radius:50%;animation:spin .8s linear infinite;
+  vertical-align:middle;margin-right:5px
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn-cancel{
+  width:100%;padding:11px;border-radius:10px;
+  background:transparent;border:1px solid var(--br);
+  color:var(--mu);font-family:inherit;font-size:.88em;
+  cursor:pointer;transition:all .2s
+}
+.btn-cancel:hover{border-color:var(--er);color:var(--er)}
+
+/* Receipt modal */
+.receipt-icon{text-align:center;font-size:3em;margin-bottom:10px}
+.receipt-title{text-align:center;font-size:1.1em;font-weight:700;margin-bottom:4px}
+.receipt-sub{text-align:center;font-size:.83em;color:var(--mu);margin-bottom:18px}
+.receipt-rows{border-top:1px dashed var(--br);border-bottom:1px dashed var(--br);padding:12px 0;margin-bottom:16px}
+.receipt-row{display:flex;justify-content:space-between;padding:5px 0;font-size:.83em}
+.receipt-row span:first-child{color:var(--mu)}
+.receipt-row span:last-child{font-weight:600;max-width:55%;text-align:right;word-break:break-all}
+.receipt-sn{
+  background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);
+  border-radius:10px;padding:10px;text-align:center;
+  font-size:.85em;color:var(--ok);margin-bottom:16px;word-break:break-all
+}
+.receipt-sn-label{font-size:.72em;color:var(--mu);margin-bottom:4px}
+.btn-close-receipt{
+  width:100%;padding:13px;border-radius:12px;
+  background:var(--p);color:#fff;border:none;
+  font-family:inherit;font-size:.92em;font-weight:700;cursor:pointer
+}
+
+/* Error state */
+.err-state{
+  text-align:center;padding:30px 20px;color:var(--mu);font-size:.88em
+}
+.err-state .ico{font-size:2.5em;margin-bottom:10px}
+
+/* Alert banner */
+.info-banner{
+  margin:0 16px 0;padding:10px 14px;
+  background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.25);
+  border-radius:10px;font-size:.8em;color:var(--pa);
+  display:flex;align-items:flex-start;gap:8px
+}
+.info-banner svg{flex-shrink:0;margin-top:1px}
+
+/* Divider */
+.divider{height:1px;background:var(--br);margin:0 16px}
+
+/* Toast */
+#toast{
+  position:fixed;bottom:100px;left:50%;
+  transform:translateX(-50%) translateY(50px);
+  background:var(--s2);color:var(--tx);
+  padding:10px 18px;border-radius:10px;
+  border:1px solid var(--br);font-size:.83em;
+  z-index:999;transition:all .3s;opacity:0;
+  max-width:280px;text-align:center;pointer-events:none
+}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+#toast.ok{border-color:var(--ok);color:var(--ok)}
+#toast.er{border-color:var(--er);color:var(--er)}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a href="/" class="btn-back">‹</a>
+  <span class="htitle" id="headerTitle">Memuat...</span>
+</header>
+
+<!-- Game bar -->
+<div class="game-bar" id="gameBar" style="display:none">
+  <div id="gameBarIco"></div>
+  <div>
+    <div class="game-bar-tag">TOP UP</div>
+    <div class="game-bar-name" id="gameBarName"></div>
+    <div class="game-bar-sub" id="gameBarSub"></div>
+  </div>
+</div>
+
+<main id="mainContent">
+  <div style="text-align:center;padding:60px 20px;color:var(--mu)">
+    <div style="font-size:2em;margin-bottom:10px">⏳</div>
+    <div>Memuat produk...</div>
+  </div>
+</main>
+
+<!-- STICKY BUY BAR -->
+<div class="sticky-bar" id="stickyBar">
+  <div>
+    <div class="bar-info-label">Total Pembayaran</div>
+    <div class="bar-info-price" id="barPrice">Rp 0</div>
+    <div class="bar-info-prod" id="barProd">—</div>
+  </div>
+  <button class="btn-buy" id="btnBuy">Beli Sekarang</button>
+</div>
+
+<!-- MODAL: Konfirmasi -->
+<div class="modal-bg" id="confModal">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title">Konfirmasi Pesanan</span>
+      <button class="modal-close" id="closeConf">✕</button>
+    </div>
+    <div id="confRows"></div>
+    <div id="confActions"></div>
+  </div>
+</div>
+
+<!-- MODAL: QRIS -->
+<div class="modal-bg" id="qrisModal">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title">Scan &amp; Bayar QRIS</span>
+      <button class="modal-close" id="closeQris">✕</button>
+    </div>
+    <div class="qris-wrap">
+      <div class="qris-img-wrap">
+        <img id="qrisImg" src="" alt="QR Code">
+      </div>
+      <div class="qris-amount" id="qrisAmt"></div>
+      <div class="qris-timer" id="qrisTimer">05:00</div>
+      <div class="qris-status" id="qrisStat">
+        <span class="qris-spinner"></span>Menunggu pembayaran...
+      </div>
+      <button class="btn-cancel" id="btnCancelQris">Batalkan Transaksi</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Struk -->
+<div class="modal-bg" id="rcptModal">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title">Bukti Transaksi</span>
+      <button class="modal-close" id="closeRcpt">✕</button>
+    </div>
+    <div id="rcptIcon" class="receipt-icon"></div>
+    <div class="receipt-title" id="rcptTitle"></div>
+    <div class="receipt-sub" id="rcptSub"></div>
+    <div id="rcptSN" class="receipt-sn" style="display:none">
+      <div class="receipt-sn-label">Serial Number / Kode</div>
+      <div id="rcptSNVal"></div>
+    </div>
+    <div class="receipt-rows" id="rcptRows"></div>
+    <button class="btn-close-receipt" onclick="closeReceipt()">Selesai</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   GAME CONFIGURATIONS
+   Tambah game baru di sini
+═══════════════════════════════════════════════ */
+const GAME_CFG = {
+  /* ── GAMES ── */
+  ff: {
+    name:'Free Fire', sub:'Garena', ico:'🔥',
+    provider:'Free Fire', category:'Games',
+    img:'https://reygenteng.github.io/gamesku/ff.png',
+    fields:[{id:'userid',lbl:'User ID',ph:'Masukkan User ID Free Fire'}],
+    checkId:'ff',
+    target:f => f.userid,
+  },
+  ml: {
+    name:'Mobile Legends', sub:'Moonton', ico:'⚔️',
+    provider:'Mobile Legends', category:'Games',
+    img:'https://reygenteng.github.io/gamesku/ml.png',
+    fields:[
+      {id:'userid',lbl:'User ID',ph:'Masukkan User ID'},
+      {id:'zoneid',lbl:'Zone ID',ph:'Masukkan Zone ID'},
+    ],
+    checkId:'ml',
+    target:f => `${f.userid}|${f.zoneid}`,
+  },
+  gi: {
+    name:'Genshin Impact', sub:'HoYoverse', ico:'🌟',
+    provider:'Genshin Impact', category:'Games',
+    img:'https://reygenteng.github.io/gamesku/gi.png',
+    fields:[
+      {id:'userid',lbl:'User ID',ph:'Masukkan UID Genshin'},
+      {id:'zoneid',lbl:'Server',ph:'os_asia / os_usa / os_euro'},
+    ],
+    target:f => `${f.userid}|${f.zoneid}`,
+  },
+  hok: {
+    name:'Honor of Kings', sub:'TiMi Studio', ico:'👑',
+    provider:'Honor of Kings', category:'Games',
+    img:'https://reygenteng.github.io/gamesku/hok.png',
+    fields:[{id:'userid',lbl:'User ID',ph:'Masukkan User ID'}],
+    target:f => f.userid,
+  },
+  pubg: {
+    name:'PUBG Mobile', sub:'Krafton', ico:'🎯',
+    provider:'PUBG Mobile', category:'Games',
+    fields:[{id:'userid',lbl:'User ID',ph:'Masukkan User ID PUBG'}],
+    target:f => f.userid,
+  },
+  codm: {
+    name:'Call of Duty Mobile', sub:'Activision', ico:'🔫',
+    provider:'Call of Duty Mobile', category:'Games',
+    fields:[{id:'userid',lbl:'User ID',ph:'Masukkan User ID CODM'}],
+    target:f => f.userid,
+  },
+  coc: {
+    name:'Clash of Clans', sub:'Supercell', ico:'⚔️',
+    provider:'Clash of Clans', category:'Games',
+    fields:[{id:'userid',lbl:'Player Tag',ph:'#XXXXXXXX'}],
+    target:f => f.userid,
+  },
+  aov: {
+    name:'Arena of Valor', sub:'TiMi Studio', ico:'🏆',
+    provider:'Arena of Valor', category:'Games',
+    fields:[{id:'userid',lbl:'User ID',ph:'Masukkan User ID AOV'}],
+    target:f => f.userid,
+  },
+  lol: {
+    name:'LoL Wild Rift', sub:'Riot Games', ico:'⚡',
+    provider:'League of Legends Wild Rift', category:'Games',
+    fields:[{id:'userid',lbl:'User ID',ph:'Masukkan User ID'}],
+    target:f => f.userid,
+  },
+  mc: {
+    name:'Magic Chess', sub:'Moonton', ico:'♟️',
+    provider:'Magic Chess: Go Go', category:'Games',
+    fields:[
+      {id:'userid',lbl:'User ID',ph:'Masukkan User ID'},
+      {id:'zoneid',lbl:'Zone ID',ph:'Masukkan Zone ID'},
+    ],
+    target:f => `${f.userid}|${f.zoneid}`,
+  },
+  ab: {
+    name:'Arena Breakout', sub:'MoreFun Studios', ico:'🎖️',
+    provider:'Arena Breakout', category:'Games',
+    fields:[{id:'userid',lbl:'User ID',ph:'Masukkan User ID'}],
+    target:f => f.userid,
+  },
+  fcm: {
+    name:'FC Mobile', sub:'EA Sports', ico:'⚽',
+    provider:'FC Mobile', category:'Games',
+    fields:[{id:'userid',lbl:'User ID',ph:'Masukkan User ID FC Mobile'}],
+    target:f => f.userid,
+  },
+  lm: {
+    name:'Lords Mobile', sub:'IGG', ico:'🏰',
+    provider:'Lords Mobile', category:'Games',
+    fields:[{id:'userid',lbl:'Player ID',ph:'Masukkan Player ID'}],
+    target:f => f.userid,
+  },
+  pb: {
+    name:'Point Blank', sub:'Garena', ico:'🎱',
+    provider:'Point Blank', category:'Games',
+    fields:[{id:'userid',lbl:'User ID',ph:'Masukkan User ID PB'}],
+    target:f => f.userid,
+  },
+  /* ── PULSA ── */
+  tsel_pulsa:{ name:'Telkomsel Pulsa', sub:'Reguler', ico:'📱', provider:'Telkomsel', category:'Pulsa Reguler',
+    fields:[{id:'phone',lbl:'Nomor Telkomsel',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  xl_pulsa:{ name:'XL Pulsa', sub:'Reguler', ico:'📱', provider:'XL', category:'Pulsa Reguler',
+    fields:[{id:'phone',lbl:'Nomor XL',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  axis_pulsa:{ name:'AXIS Pulsa', sub:'Reguler', ico:'📱', provider:'Axis', category:'Pulsa Reguler',
+    fields:[{id:'phone',lbl:'Nomor AXIS',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  im3_pulsa:{ name:'IM3 Pulsa', sub:'Indosat', ico:'📱', provider:'Indosat', category:'Pulsa Reguler',
+    fields:[{id:'phone',lbl:'Nomor IM3',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  tri_pulsa:{ name:'Tri Pulsa', sub:'Reguler', ico:'📱', provider:'Tri', category:'Pulsa Reguler',
+    fields:[{id:'phone',lbl:'Nomor Tri',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  sf_pulsa:{ name:'Smartfren Pulsa', sub:'Reguler', ico:'📱', provider:'Smartfren', category:'Pulsa Reguler',
+    fields:[{id:'phone',lbl:'Nomor Smartfren',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  byu_pulsa:{ name:'by.U Pulsa', sub:'Reguler', ico:'📱', provider:'by.U', category:'Pulsa Reguler',
+    fields:[{id:'phone',lbl:'Nomor by.U',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  /* ── DATA ── */
+  tsel_data:{ name:'Telkomsel Data', sub:'Internet', ico:'📶', provider:'Telkomsel', category:'Data Internet',
+    fields:[{id:'phone',lbl:'Nomor Telkomsel',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  xl_data:{ name:'XL Data', sub:'Internet', ico:'📶', provider:'XL', category:'Data Internet',
+    fields:[{id:'phone',lbl:'Nomor XL',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  im3_data:{ name:'IM3 Data', sub:'Internet', ico:'📶', provider:'Indosat', category:'Data Internet',
+    fields:[{id:'phone',lbl:'Nomor IM3',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  tri_data:{ name:'Tri Data', sub:'Internet', ico:'📶', provider:'Tri', category:'Data Internet',
+    fields:[{id:'phone',lbl:'Nomor Tri',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  sf_data:{ name:'Smartfren Data', sub:'Internet', ico:'📶', provider:'Smartfren', category:'Data Internet',
+    fields:[{id:'phone',lbl:'Nomor Smartfren',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  byu_data:{ name:'by.U Data', sub:'Internet', ico:'📶', provider:'by.U', category:'Data Internet',
+    fields:[{id:'phone',lbl:'Nomor by.U',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  axis_data:{ name:'AXIS Data', sub:'Internet', ico:'📶', provider:'Axis', category:'Data Internet',
+    fields:[{id:'phone',lbl:'Nomor AXIS',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  /* ── E-MONEY ── */
+  dana:{ name:'DANA', sub:'E-Wallet', ico:'💙', provider:'DANA', category:'E-Money',
+    fields:[{id:'phone',lbl:'Nomor DANA',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  ovo:{ name:'OVO', sub:'E-Wallet', ico:'💜', provider:'OVO', category:'E-Money',
+    fields:[{id:'phone',lbl:'Nomor OVO',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  gopay:{ name:'GoPay', sub:'E-Wallet', ico:'💚', provider:'GO PAY', category:'E-Money',
+    fields:[{id:'phone',lbl:'Nomor GoPay',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  spay:{ name:'ShopeePay', sub:'E-Wallet', ico:'🧡', provider:'SHOPEE PAY', category:'E-Money',
+    fields:[{id:'phone',lbl:'Nomor ShopeePay',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  linkaja:{ name:'LinkAja', sub:'E-Wallet', ico:'❤️', provider:'LinkAja', category:'E-Money',
+    fields:[{id:'phone',lbl:'Nomor LinkAja',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  apay:{ name:'AstraPay', sub:'E-Wallet', ico:'🔵', provider:'AstraPay', category:'E-Money',
+    fields:[{id:'phone',lbl:'Nomor AstraPay',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  /* ── VOUCHER ── */
+  pln:{ name:'PLN Token', sub:'Listrik', ico:'⚡', provider:'PLN', category:'Voucher',
+    fields:[{id:'meter',lbl:'Nomor Meter / ID Pelanggan',ph:'Masukkan nomor meter'}], target:f=>f.meter },
+  gplay:{ name:'Google Play', sub:'Voucher', ico:'🎮', provider:'GOOGLE PLAY INDONESIA', category:'Voucher',
+    fields:[{id:'email',lbl:'Email Google',ph:'email@gmail.com'}], target:f=>f.email },
+  indomaret:{ name:'Indomaret Card', sub:'Voucher', ico:'🏪', provider:'INDOMARET', category:'Voucher',
+    fields:[{id:'phone',lbl:'Nomor HP',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  alfamart:{ name:'Alfamart Voucher', sub:'Voucher', ico:'🏬', provider:'ALFAMART VOUCHER', category:'Voucher',
+    fields:[{id:'phone',lbl:'Nomor HP',ph:'08xx-xxxx-xxxx'}], target:f=>f.phone },
+  itunes:{ name:'iTunes', sub:'Gift Card', ico:'🍎', provider:'iTunes', category:'Voucher',
+    fields:[{id:'email',lbl:'Apple ID (Email)',ph:'email@icloud.com'}], target:f=>f.email },
+  xbox:{ name:'Xbox', sub:'Gift Card', ico:'🟢', provider:'XBOX', category:'Voucher',
+    fields:[{id:'email',lbl:'Email Microsoft',ph:'email@outlook.com'}], target:f=>f.email },
+  ps:{ name:'PlayStation', sub:'PSN Gift Card', ico:'🕹️', provider:'PLAYSTATION', category:'Voucher',
+    fields:[{id:'email',lbl:'Email PSN',ph:'email@example.com'}], target:f=>f.email },
+  roblox:{ name:'Roblox', sub:'Robux', ico:'🟥', provider:'Roblox', category:'Voucher',
+    fields:[{id:'userid',lbl:'Username Roblox',ph:'Masukkan username'}], target:f=>f.userid },
+  /* ── PREMIUM ── */
+  netflix:{ name:'Netflix', sub:'Akun Premium', ico:'🎬', provider:'Netflix', category:'Akun Premium',
+    fields:[{id:'email',lbl:'Email (opsional)',ph:'email@example.com (opsional)'}], target:f=>f.email||'shared' },
+  spotify:{ name:'Spotify Premium', sub:'Akun Premium', ico:'🎵', provider:'SPOTIFY', category:'Akun Premium',
+    fields:[{id:'email',lbl:'Email Spotify',ph:'email@example.com'}], target:f=>f.email },
+  youtube:{ name:'YouTube Premium', sub:'Akun Premium', ico:'▶️', provider:'Youtube Premium', category:'Akun Premium',
+    fields:[{id:'email',lbl:'Email Google',ph:'email@gmail.com'}], target:f=>f.email },
+  disney:{ name:'Disney+', sub:'Akun Premium', ico:'✨', provider:'Disney', category:'Akun Premium',
+    fields:[{id:'email',lbl:'Email (opsional)',ph:'email@example.com'}], target:f=>f.email||'shared' },
+  wetv:{ name:'WeTV', sub:'Akun Premium', ico:'🎬', provider:'WETV', category:'Akun Premium',
+    fields:[{id:'email',lbl:'Email WeTV',ph:'email@example.com'}], target:f=>f.email },
+  canva:{ name:'Canva Pro', sub:'Akun Premium', ico:'✏️', provider:'canva', category:'Akun Premium',
+    fields:[{id:'email',lbl:'Email Canva',ph:'email@example.com'}], target:f=>f.email },
+  capcut:{ name:'CapCut Pro', sub:'Akun Premium', ico:'✂️', provider:'Capcut', category:'Akun Premium',
+    fields:[{id:'email',lbl:'Email CapCut',ph:'email@example.com'}], target:f=>f.email },
+  am:{ name:'Alight Motion', sub:'Akun Premium', ico:'🎨', provider:'Alight Motion', category:'Akun Premium',
+    fields:[{id:'email',lbl:'Email',ph:'email@example.com'}], target:f=>f.email },
+  vidio:{ name:'Vidio', sub:'Akun Premium', ico:'📺', provider:'Vidio', category:'Akun Premium',
+    fields:[{id:'email',lbl:'Email Vidio',ph:'email@example.com'}], target:f=>f.email },
+};
+
+/* ═══════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════ */
+let GAME = null;
+let CFG  = null;
+let allProducts = [];
+let selProduct  = null;
+let selPayment  = 'QRIS';
+let ownerWA     = '';
+let depositId   = null;
+let pollingInt  = null;
+let timerInt    = null;
+
+/* ═══════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════ */
+function rp(n) {
+  return 'Rp ' + Number(n).toLocaleString('id-ID');
+}
+function genReff(pfx='GN') {
+  return `${pfx}-${Date.now()}-${Math.random().toString(36).substr(2,6).toUpperCase()}`;
+}
+function toast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'show ' + type;
+  clearTimeout(t._to);
+  t._to = setTimeout(()=>t.className='', 3500);
+}
+async function api(action, data={}) {
+  const r = await fetch('/api/proxy?action='+action, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(data),
+  });
+  return r.json();
+}
+function showModal(id) {
+  document.getElementById(id).classList.add('show');
+}
+function hideModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', async () => {
+  GAME = new URLSearchParams(location.search).get('game');
+  CFG  = GAME_CFG[GAME];
+
+  if (!CFG) {
+    document.getElementById('mainContent').innerHTML = `
+      <div class="err-state"><div class="ico">⚠️</div>
+      Game tidak ditemukan.<br><br>
+      <a href="/" style="color:var(--pa)">← Kembali ke Beranda</a></div>`;
+    return;
+  }
+
+  document.title = `Top Up ${CFG.name} — GamesNow`;
+  document.getElementById('headerTitle').textContent = `Top Up ${CFG.name}`;
+
+  /* Game bar */
+  const bar = document.getElementById('gameBar');
+  bar.style.display = 'flex';
+  const icoEl = document.getElementById('gameBarIco');
+  if (CFG.img) {
+    icoEl.innerHTML = `<img src="${CFG.img}" alt="${CFG.name}" style="width:52px;height:52px;border-radius:12px;object-fit:cover">`;
+  } else {
+    icoEl.innerHTML = `<div style="width:52px;height:52px;border-radius:12px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:1.8em;flex-shrink:0">${CFG.ico}</div>`;
+  }
+  document.getElementById('gameBarName').textContent = CFG.name;
+  document.getElementById('gameBarSub').textContent  = CFG.sub;
+
+  /* Fetch WA config & Products */
+  const [cfgRes, prodRes] = await Promise.all([
+    api('config'),
+    api('price_list'),
+  ]);
+  if (cfgRes.ok) ownerWA = cfgRes.wa;
+
+  if (!prodRes.ok || !prodRes.data) {
+    document.getElementById('mainContent').innerHTML = `
+      <div class="err-state"><div class="ico">❌</div>
+      Gagal memuat produk. Coba refresh halaman.<br><br>
+      <button onclick="location.reload()" style="margin-top:10px;padding:9px 18px;background:var(--p);color:#fff;border:none;border-radius:9px;font-family:inherit;cursor:pointer">Refresh</button>
+      </div>`;
+    return;
+  }
+
+  allProducts = prodRes.data.filter(p =>
+    p.provider.toLowerCase() === CFG.provider.toLowerCase() &&
+    p.category.toLowerCase()  === CFG.category.toLowerCase()
+  ).sort((a,b)=>a.price-b.price);
+
+  renderPage();
+});
+
+/* ═══════════════════════════════════════════════
+   RENDER PAGE
+═══════════════════════════════════════════════ */
+function renderPage() {
+  const mc = document.getElementById('mainContent');
+
+  const isML = GAME === 'ml' || GAME === 'mc';
+
+  mc.innerHTML = `
+    <!-- STEP 1: ID FIELDS -->
+    <div class="step">
+      <div class="step-label"><span class="step-num">1</span> Masukkan Detail Akun</div>
+      <div class="field-group" id="fieldGroup"></div>
+      ${CFG.checkId ? `<button class="check-btn" id="checkBtn">🔍 Cek Nama Akun</button>` : ''}
+      <div class="id-result" id="idResult"></div>
+    </div>
+    <div class="divider"></div>
+
+    <!-- STEP 2: NOMINAL -->
+    <div class="step">
+      <div class="step-label"><span class="step-num">2</span> Pilih Nominal
+        <span style="font-size:.75em;color:var(--mu);font-weight:400">(${allProducts.filter(p=>p.status==='available').length} tersedia)</span>
+      </div>
+      ${allProducts.length === 0
+        ? `<div class="err-state" style="padding:20px 0"><div class="ico" style="font-size:1.8em">📦</div>Belum ada produk tersedia untuk game ini.</div>`
+        : `<div class="prod-grid" id="prodGrid"></div>`
+      }
+    </div>
+    <div class="divider"></div>
+
+    <!-- STEP 3: PAYMENT -->
+    <div class="step">
+      <div class="step-label"><span class="step-num">3</span> Metode Pembayaran</div>
+      <div class="pay-list">
+        <div class="pay-item sel" data-pay="QRIS" onclick="selectPay(this,'QRIS')">
+          <div class="pay-l">
+            <span class="pay-logo-txt">QRIS</span>
+            <div><div class="pay-name">QRIS (Scan &amp; Bayar)</div><div class="pay-desc">GoPay, OVO, DANA, ShopeePay, dll</div></div>
+          </div>
+          <div class="pay-radio"></div>
+        </div>
+        ${ownerWA ? `
+        <div class="pay-item" data-pay="WA_DANA" onclick="selectPay(this,'WA_DANA')">
+          <div class="pay-l">
+            <img src="https://reygenteng.github.io/reybelirbx/belirobux/dana.png" class="pay-logo" alt="DANA">
+            <div><div class="pay-name">DANA (via WhatsApp)</div><div class="pay-desc">Transfer manual, konfirmasi ke admin</div></div>
+          </div>
+          <div class="pay-radio"></div>
+        </div>
+        <div class="pay-item" data-pay="WA_OVO" onclick="selectPay(this,'WA_OVO')">
+          <div class="pay-l">
+            <img src="https://reygenteng.github.io/reybelirbx/belirobux/ovo.png" class="pay-logo" alt="OVO">
+            <div><div class="pay-name">OVO (via WhatsApp)</div><div class="pay-desc">Transfer manual, konfirmasi ke admin</div></div>
+          </div>
+          <div class="pay-radio"></div>
+        </div>
+        <div class="pay-item" data-pay="WA_GOPAY" onclick="selectPay(this,'WA_GOPAY')">
+          <div class="pay-l">
+            <img src="https://reygenteng.github.io/reybelirbx/belirobux/gopay.png" class="pay-logo" alt="GoPay">
+            <div><div class="pay-name">GoPay (via WhatsApp)</div><div class="pay-desc">Transfer manual, konfirmasi ke admin</div></div>
+          </div>
+          <div class="pay-radio"></div>
+        </div>` : ''}
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+  `;
+
+  /* Render field inputs */
+  const fg = document.getElementById('fieldGroup');
+  if (isML && CFG.fields.length >= 2) {
+    fg.innerHTML = `<div class="field-row">
+      ${CFG.fields.map(f=>`
+        <div class="field-wrap">
+          <label class="field-lbl">${f.lbl}</label>
+          <input class="field-inp" id="fi_${f.id}" type="text" placeholder="${f.ph}" oninput="onFieldChange()">
+        </div>`).join('')}
+    </div>`;
+  } else {
+    fg.innerHTML = CFG.fields.map(f=>`
+      <div class="field-wrap">
+        <label class="field-lbl">${f.lbl}</label>
+        <input class="field-inp" id="fi_${f.id}" type="${f.id==='email'?'email':'text'}" placeholder="${f.ph}" oninput="onFieldChange()">
+      </div>`).join('');
+  }
+
+  /* Render product grid */
+  if (allProducts.length > 0) {
+    const pg = document.getElementById('prodGrid');
+    pg.innerHTML = allProducts.map((p, i) => `
+      <div class="prod-item ${p.status!=='available'?'unavail':''}" 
+           data-idx="${i}" onclick="selectProd(this,${i})">
+        <div class="prod-chk">✓</div>
+        ${i===0 && p.status==='available' ? `<div class="prod-badge">Terlaris</div>` : ''}
+        <div class="prod-icon">${CFG.ico}</div>
+        <div class="prod-name">${p.name.replace(CFG.provider,'').trim() || p.name}</div>
+        <div class="prod-price">${rp(p.price)}</div>
+        ${p.note && p.note !== 'null' ? `<div class="prod-note">${p.note}</div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  /* Check ID button */
+  if (CFG.checkId) {
+    document.getElementById('checkBtn').addEventListener('click', checkUserID);
+  }
+
+  /* Buy button */
+  document.getElementById('btnBuy').addEventListener('click', handleBuy);
+
+  /* Close modals */
+  document.getElementById('closeConf').onclick  = () => hideModal('confModal');
+  document.getElementById('closeQris').onclick  = cancelQRIS;
+  document.getElementById('closeRcpt').onclick  = closeReceipt;
+  document.getElementById('btnCancelQris').onclick = cancelQRIS;
+}
+
+/* ═══════════════════════════════════════════════
+   INTERACTIONS
+═══════════════════════════════════════════════ */
+function getFields() {
+  const f = {};
+  CFG.fields.forEach(fld => {
+    const el = document.getElementById('fi_' + fld.id);
+    f[fld.id] = el ? el.value.trim() : '';
+  });
+  return f;
+}
+
+function onFieldChange() { updateStickyBar(); }
+
+function selectProd(el, idx) {
+  document.querySelectorAll('.prod-item').forEach(i => i.classList.remove('sel'));
+  el.classList.add('sel');
+  selProduct = allProducts[idx];
+  updateStickyBar();
+}
+
+function selectPay(el, name) {
+  document.querySelectorAll('.pay-item').forEach(i => i.classList.remove('sel'));
+  el.classList.add('sel');
+  selPayment = name;
+}
+
+function updateStickyBar() {
+  const bar  = document.getElementById('stickyBar');
+  const fields = getFields();
+  const hasFields = CFG.fields.every(f => fields[f.id]);
+  if (selProduct && hasFields) {
+    document.getElementById('barPrice').textContent = rp(selProduct.price);
+    document.getElementById('barProd').textContent  = selProduct.name;
+    bar.classList.add('show');
+  } else {
+    bar.classList.remove('show');
+  }
+}
+
+async function checkUserID() {
+  const fields = getFields();
+  const res = document.getElementById('idResult');
+  const btn = document.getElementById('checkBtn');
+  if (!fields.userid) { toast('Masukkan User ID terlebih dahulu', 'er'); return; }
+  btn.textContent = '⏳ Mengecek...';
+  btn.disabled = true;
+  try {
+    let r;
+    if (CFG.checkId === 'ff') {
+      r = await api('check_ff', { id: fields.userid });
+    } else if (CFG.checkId === 'ml') {
+      if (!fields.zoneid) { toast('Masukkan Zone ID juga', 'er'); return; }
+      r = await api('check_ml', { id: fields.userid, server: fields.zoneid });
+    }
+    if (r && r.ok && r.data) {
+      const name = r.data.name || r.data.nickname || r.data.username || 'Ditemukan';
+      res.textContent = `✅ ${name}`;
+      res.style.display = 'block';
+    } else {
+      res.style.background = 'rgba(239,68,68,.1)';
+      res.style.border = '1px solid rgba(239,68,68,.3)';
+      res.style.color = 'var(--er)';
+      res.textContent = '❌ Akun tidak ditemukan. Periksa kembali ID kamu.';
+      res.style.display = 'block';
+    }
+  } catch(e) {
+    toast('Gagal cek ID', 'er');
+  } finally {
+    btn.textContent = '🔍 Cek Nama Akun';
+    btn.disabled = false;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   BUY FLOW
+═══════════════════════════════════════════════ */
+function handleBuy() {
+  if (!selProduct) { toast('Pilih nominal terlebih dahulu', 'er'); return; }
+  const fields = getFields();
+  const missing = CFG.fields.find(f => !fields[f.id]);
+  if (missing) { toast(`Isi kolom ${missing.lbl}`, 'er'); return; }
+
+  /* Build confirmation modal */
+  const target = CFG.target(fields);
+  const isWA   = selPayment.startsWith('WA_');
+  const payName = selPayment === 'QRIS' ? 'QRIS' : selPayment.replace('WA_','');
+
+  const fieldRows = CFG.fields.map(f =>
+    `<div class="conf-row"><span class="conf-lbl">${f.lbl}</span><span class="conf-val">${fields[f.id]}</span></div>`
+  ).join('');
+
+  document.getElementById('confRows').innerHTML = `
+    ${fieldRows}
+    <div class="conf-row"><span class="conf-lbl">Produk</span><span class="conf-val">${selProduct.name}</span></div>
+    <div class="conf-row"><span class="conf-lbl">Harga</span><span class="conf-val" style="color:var(--pa);font-size:1em">${rp(selProduct.price)}</span></div>
+    <div class="conf-row"><span class="conf-lbl">Pembayaran</span><span class="conf-val">${payName}</span></div>
+  `;
+
+  document.getElementById('confActions').innerHTML = isWA
+    ? `<button class="btn-conf btn-wa" onclick="doWARedirect()">💬 Lanjutkan ke WhatsApp</button>`
+    : `<button class="btn-conf" onclick="doQRIS()">⚡ Bayar dengan QRIS</button>`;
+
+  showModal('confModal');
+}
+
+function doWARedirect() {
+  hideModal('confModal');
+  const fields  = getFields();
+  const target  = CFG.target(fields);
+  const payName = selPayment.replace('WA_', '');
+  const msg = `Halo Admin GamesNow 👋\n\nSaya ingin top up:\n🎮 Game: ${CFG.name}\n📦 Produk: ${selProduct.name}\n🎯 Target: ${target}\n💰 Harga: ${rp(selProduct.price)}\n💳 Bayar via: ${payName}\n\nMohon konfirmasi. Terima kasih!`;
+  window.open(`https://wa.me/${ownerWA}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+async function doQRIS() {
+  hideModal('confModal');
+  const btn = document.getElementById('btnBuy');
+  btn.disabled = true; btn.textContent = '⏳ Membuat QRIS...';
+
+  const reff = genReff('GN');
+  const r = await api('deposit_create', {
+    reff_id: reff,
+    nominal: selProduct.price,
+    metode:  'QRISFAST',
+  });
+
+  btn.disabled = false; btn.textContent = 'Beli Sekarang';
+
+  if (!r.ok || !r.data) {
+    toast(r.msg || 'Gagal membuat pembayaran QRIS', 'er'); return;
+  }
+
+  const d = r.data;
+  depositId = d.id;
+
+  /* Show QRIS modal */
+  document.getElementById('qrisAmt').textContent  = rp(d.nominal || selProduct.price);
+  document.getElementById('qrisStat').innerHTML   = `<span class="qris-spinner"></span>Menunggu pembayaran...`;
+  document.getElementById('qrisImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=12&data=${encodeURIComponent(d.qr_string)}`;
+  showModal('qrisModal');
+
+  /* Timer: 5 menit */
+  let secs = 300;
+  clearInterval(timerInt);
+  timerInt = setInterval(() => {
+    secs--;
+    const m = Math.floor(secs/60).toString().padStart(2,'0');
+    const s = (secs%60).toString().padStart(2,'0');
+    document.getElementById('qrisTimer').textContent = `${m}:${s}`;
+    if (secs <= 0) { clearInterval(timerInt); cancelQRIS(); }
+  }, 1000);
+
+  /* Polling status */
+  const orderReff = reff;
+  const code      = selProduct.code;
+  const target    = CFG.target(getFields());
+
+  clearInterval(pollingInt);
+  pollingInt = setInterval(async () => {
+    if (!depositId) { clearInterval(pollingInt); return; }
+    const s = await api('deposit_status', { id: depositId });
+    if (!s.ok || !s.data) return;
+    const status = s.data.status;
+    if (status === 'success') {
+      clearInterval(pollingInt); clearInterval(timerInt);
+      document.getElementById('qrisStat').innerHTML = '⏳ Pembayaran diterima! Memproses top up...';
+      await doTopUp(orderReff, code, target, s.data);
+    } else if (status === 'failed' || status === 'cancel' || status === 'canceled') {
+      clearInterval(pollingInt); clearInterval(timerInt);
+      depositId = null;
+      hideModal('qrisModal');
+      toast('Pembayaran dibatalkan atau gagal', 'er');
+    }
+  }, 5000);
+}
+
+async function doTopUp(reff, code, target, payData) {
+  const txReff = genReff('TX');
+  const r = await api('txn_create', { reff_id: txReff, code, target });
+
+  hideModal('qrisModal');
+  depositId = null;
+
+  /* Render receipt */
+  if (r.ok && r.data) {
+    document.getElementById('rcptIcon').textContent  = '✅';
+    document.getElementById('rcptTitle').textContent = 'Pembelian Berhasil!';
+    document.getElementById('rcptSub').textContent   = 'Transaksi sedang diproses oleh sistem.';
+    if (r.data.sn && r.data.sn !== '-') {
+      document.getElementById('rcptSN').style.display = 'block';
+      document.getElementById('rcptSNVal').textContent = r.data.sn;
+    }
+  } else {
+    document.getElementById('rcptIcon').textContent  = '⚠️';
+    document.getElementById('rcptTitle').textContent = 'Pembayaran Diterima';
+    document.getElementById('rcptSub').textContent   = 'Pembayaran sukses, proses top up sedang antri. Hubungi admin jika lebih dari 5 menit.';
+  }
+
+  document.getElementById('rcptRows').innerHTML = `
+    <div class="receipt-row"><span>Produk</span><span>${selProduct.name}</span></div>
+    <div class="receipt-row"><span>Target</span><span>${target}</span></div>
+    <div class="receipt-row"><span>Harga Dibayar</span><span style="color:var(--pa)">${rp(payData.get_balance||selProduct.price)}</span></div>
+    <div class="receipt-row"><span>Ref ID</span><span>${txReff}</span></div>
+    <div class="receipt-row"><span>Status</span><span style="color:var(--ok)">${r.ok ? (r.data?.status||'Diproses') : 'Menunggu'}</span></div>
+  `;
+  showModal('rcptModal');
+}
+
+async function cancelQRIS() {
+  clearInterval(pollingInt); clearInterval(timerInt);
+  const id = depositId; depositId = null;
+  hideModal('qrisModal');
+  if (id) await api('deposit_cancel', { id });
+}
+
+function closeReceipt() {
+  hideModal('rcptModal');
+  selProduct = null;
+  document.querySelectorAll('.prod-item').forEach(i => i.classList.remove('sel'));
+  document.getElementById('stickyBar').classList.remove('show');
+  document.querySelectorAll('.field-inp').forEach(i => i.value='');
+  document.getElementById('idResult').style.display = 'none';
+}
+</script>
+</body>
+</html>

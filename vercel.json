@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "functions": {
+    "api/proxy.js": { "maxDuration": 30 },
+    "api/admin.js": { "maxDuration": 30 }
+  },
+  "routes": [
+    { "src": "/api/proxy", "dest": "/api/proxy.js" },
+    { "src": "/api/admin", "dest": "/api/admin.js" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/404.html", "status": 404 }
+  ]
+}
